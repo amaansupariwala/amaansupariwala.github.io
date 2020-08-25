@@ -327,33 +327,33 @@ ul#nav li.current a { color: #F06000; }
 
 .photoshop {
   	width: 95%;
-  	-moz-animation: photoshop 2s ease;
-  	-webkit-animation: photoshop 2s ease;
+  	/*-moz-animation: photoshop 2s ease;*/
+  	/*-webkit-animation: photoshop 2s ease;*/
 }
 .illustrator {
   	width: 90%;
-  	-moz-animation: illustrator 2s ease;
-  	-webkit-animation: illustrator 2s ease;
+  	/*-moz-animation: illustrator 2s ease;*/
+  	/*-webkit-animation: illustrator 2s ease;*/
 }
 .wordpress {
   	width: 75%;
-  	-moz-animation: wordpress 2s ease;
-  	-webkit-animation: wordpress 2s ease;
+  	/*-moz-animation: wordpress 2s ease;*/
+  	/*-webkit-animation: wordpress 2s ease;*/
 }
 .css {
   	width: 75%;
-  	-moz-animation: css 2s ease;
-  	-webkit-animation: css 2s ease;
+  	/*-moz-animation: css 2s ease;*/
+  	/*-webkit-animation: css 2s ease;*/
 }
 .html5 {
   	width: 80%;
-  	-moz-animation: html5 2s ease;
-  	-webkit-animation: html5 2s ease;
+  	/*-moz-animation: html5 2s ease;*/
+  	/*-webkit-animation: html5 2s ease;*/
 }
 .jquery {
   	width: 95%;
-  	-moz-animation: jquery 2s ease;
-  	-webkit-animation: jquery 2s ease;
+  	/*-moz-animation: jquery 2s ease; */
+  	/*-webkit-animation: jquery 2s ease; */
 }
 
 @-moz-keyframes photoshop {
