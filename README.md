@@ -1,6 +1,6 @@
 My Portfolio!
 
-To Access, Type into any web browser the following command request:
+To Access, type into any web browser the following command request:
 https://amaansupariwala.github.com
 
 
