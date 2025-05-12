@@ -262,7 +262,7 @@ const Header = ({ portfolioData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   
-  const taglines = useMemo(() => ["Product Leader", "Basketball Analytics Enthusiast", "Big Tech -> Startups", "Sports Tech", "Off Ball Scorer"], []);
+  const taglines = useMemo(() => ["Product Leader", "Basketball Analytics Enthusiast", "Sports Tech Startup Builder", "Off Ball Scorer"], []);
   
   useEffect(() => {
     const handleScroll = () => {

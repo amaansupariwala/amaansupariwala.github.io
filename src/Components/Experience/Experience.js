@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useMediaQuery } from 'react-responsive';
 
 const ExperienceSection = styled.section`
   background-color: ${props => props.theme.colors.surface};
@@ -430,6 +431,69 @@ const ProgressIndicator = styled.div`
   transition: width 0.5s ease;
 `;
 
+const MobileTimelineContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    display: none;
+  }
+`;
+
+const MobileStepperNav = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  margin: 16px 0 0 0;
+`;
+
+const MobileStepButton = styled.button`
+  background: linear-gradient(to right, #8e44ad, #e74c3c, #f39c12);
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 8px 18px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  opacity: ${props => props.disabled ? 0.5 : 1};
+  pointer-events: ${props => props.disabled ? 'none' : 'auto'};
+  transition: background 0.3s;
+`;
+
+// Update MobileNavDots to only show on mobile
+const MobileNavDots = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 0 0;
+  @media (min-width: ${props => props.theme.breakpoints.md}) {
+    display: none;
+  }
+`;
+
+// Ensure MobileNavDot active state updates immediately
+const MobileNavDot = styled.button`
+  width: ${props => props.active ? '22px' : '14px'};
+  height: ${props => props.active ? '22px' : '14px'};
+  border-radius: 50%;
+  border: none;
+  background: #2d2d2d;
+  opacity: ${props => props.active ? 1 : 0.5};
+  box-shadow: ${props => props.active ? '0 0 8px 2px rgba(243,156,18,0.25)' : 'none'};
+  cursor: pointer;
+  transition: 
+    width 0.25s cubic-bezier(0.4,0.2,0.2,1),
+    height 0.25s cubic-bezier(0.4,0.2,0.2,1),
+    box-shadow 0.25s cubic-bezier(0.4,0.2,0.2,1),
+    opacity 0.2s;
+  outline: none;
+  position: relative;
+  z-index: 1;
+`;
+
 const getCompanyIcon = (company) => {
   switch(company.toLowerCase()) {
     case 'cerebro sports':
@@ -544,12 +608,22 @@ const Experience = ({ portfolioData }) => {
     return ((activeIndex + 1) / sortedExperiences.length) * 100;
   };
   
+  const isMobile = useMediaQuery({ maxWidth: 768 });
+
+  const [mobileIndex, setMobileIndex] = useState(cerebroIndex !== -1 ? cerebroIndex : 0);
+  const handleMobilePrev = () => setMobileIndex(i => Math.max(i - 1, 0));
+  const handleMobileNext = () => setMobileIndex(i => Math.min(i + 1, sortedExperiences.length - 1));
+  const handleMobileDotClick = (idx) => {
+    setMobileIndex(idx);
+  };
+
   return (
     <ExperienceSection id="experience">
       <Container>
         <SectionTitle>Professional Experience</SectionTitle>
         
-        <TimelineContainer>
+        {/* Desktop Timeline */}
+        <TimelineContainer style={{ display: isMobile ? 'none' : undefined }}>
           <TimelineTrack>
             <ProgressIndicator $progress={getProgressPercentage()} />
             
@@ -675,6 +749,116 @@ const Experience = ({ portfolioData }) => {
             </AnimatePresence>
           </ExperienceDetailsContainer>
         </TimelineContainer>
+        {/* Mobile Timeline */}
+        <MobileNavDots>
+          {sortedExperiences.map((exp, idx) => (
+            <MobileNavDot
+              key={idx}
+              active={mobileIndex === idx}
+              aria-label={exp.company}
+              onClick={() => handleMobileDotClick(idx)}
+            />
+          ))}
+        </MobileNavDots>
+        <MobileTimelineContainer>
+          <ExperienceDetailsContainer style={{ minHeight: 'unset', padding: '0 0 32px 0', marginBottom: 0 }}>
+            <AnimatePresence mode="wait">
+              <ExperienceCard
+                key={mobileIndex}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+                style={{
+                  width: '100%',
+                  maxWidth: '100%',
+                  minWidth: 'unset',
+                  minHeight: 'unset',
+                  padding: '24px 14px 24px 14px',
+                  boxSizing: 'border-box',
+                  borderRadius: 20,
+                  background: '#18151c',
+                  boxShadow: '0 2px 16px 0 rgba(0,0,0,0.18)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', marginBottom: 18 }}>
+                  <CompanyLogo style={{ position: 'static', width: 40, height: 40, marginRight: 14, boxShadow: 'none', border: '1.5px solid #8e44ad' }}>
+                    <i className={getCompanyIcon(sortedExperiences[mobileIndex].company)} />
+                  </CompanyLogo>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                      <CompanyName style={{ fontSize: '1.12rem', maxWidth: 160, whiteSpace: 'normal', marginBottom: 0, fontWeight: 700, color: '#fff', letterSpacing: 0.1 }}>
+                        {sortedExperiences[mobileIndex].company}
+                      </CompanyName>
+                      <YearLabel style={{ position: 'static', fontSize: '1.02rem', color: '#f39c12', marginLeft: 10, fontWeight: 700 }}>
+                        {getYear(sortedExperiences[mobileIndex].period)}
+                      </YearLabel>
+                    </div>
+                    <JobTitle style={{ fontSize: '1.01rem', marginBottom: 4, color: '#a97be0', fontWeight: 600 }}>{sortedExperiences[mobileIndex].title}</JobTitle>
+                  </div>
+                </div>
+                <JobMeta style={{ flexDirection: 'column', gap: 4, marginBottom: 14 }}>
+                  <JobPeriod style={{ fontSize: '0.97rem', color: '#bdbdbd', marginBottom: 2 }}>
+                    <i className="fas fa-calendar-alt" style={{ color: '#e74c3c' }} />
+                    {sortedExperiences[mobileIndex].period}
+                  </JobPeriod>
+                  <JobLocation style={{ fontSize: '0.97rem', color: '#bdbdbd' }}>
+                    <i className="fas fa-map-marker-alt" style={{ color: '#f39c12' }} />
+                    {sortedExperiences[mobileIndex].location}
+                  </JobLocation>
+                </JobMeta>
+                <JobDescription style={{ fontSize: '1.01rem', marginBottom: 18, color: '#eaeaea', lineHeight: 1.6 }}>
+                  {sortedExperiences[mobileIndex].description}
+                </JobDescription>
+                <SectionDivider style={{ margin: '18px 0', height: 1 }} />
+                <SectionLabel style={{ fontSize: '1.03rem', marginBottom: 10, color: '#a97be0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <i className="fas fa-trophy" style={{ color: '#a97be0', fontSize: '1.13em' }} /> Key Achievements
+                </SectionLabel>
+                <AchievementsList style={{ gridTemplateColumns: '1fr', gap: 8, marginBottom: 16 }}>
+                  {sortedExperiences[mobileIndex].achievements.map((achievement, idx) => (
+                    <AchievementItem key={idx} style={{ fontSize: '1.01rem', paddingLeft: 18, color: '#fff' }}>
+                      {achievement}
+                    </AchievementItem>
+                  ))}
+                </AchievementsList>
+                <SectionLabel style={{ fontSize: '1.03rem', marginBottom: 10, color: '#a97be0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <i className="fas fa-tools" style={{ color: '#a97be0', fontSize: '1.13em' }} /> Skills & Technologies
+                </SectionLabel>
+                <SkillsList style={{ gap: 6, marginBottom: 16 }}>
+                  {sortedExperiences[mobileIndex].skills.map((skill, idx) => (
+                    <SkillTag key={idx} style={{ fontSize: '0.99rem', padding: '4px 12px', background: '#2d193c', color: '#eaeaea' }}>{skill}</SkillTag>
+                  ))}
+                </SkillsList>
+                <SectionDivider style={{ margin: '18px 0', height: 1 }} />
+                <SectionLabel style={{ fontSize: '1.03rem', marginBottom: 10, color: '#a97be0', display: 'flex', alignItems: 'center', gap: 6 }}>
+                  <i className="fas fa-link" style={{ color: '#a97be0', fontSize: '1.13em' }} /> Relevant Links
+                </SectionLabel>
+                <LinksList style={{ gap: 10 }}>
+                  <LinkItem 
+                    href={sortedExperiences[mobileIndex].url || "https://google.com"} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '1.01rem', color: '#a97be0' }}
+                  >
+                    <i className="fas fa-globe" /> Website
+                  </LinkItem>
+                  <LinkItem 
+                    href={sortedExperiences[mobileIndex].workUrl || "https://google.com"} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    style={{ fontSize: '1.01rem', color: '#a97be0' }}
+                  >
+                    <i className="fas fa-briefcase" /> Work Attached
+                  </LinkItem>
+                </LinksList>
+                <MobileStepperNav>
+                  <MobileStepButton onClick={handleMobilePrev} disabled={mobileIndex === 0}>&larr; Previous</MobileStepButton>
+                  <MobileStepButton onClick={handleMobileNext} disabled={mobileIndex === sortedExperiences.length - 1}>Next &rarr;</MobileStepButton>
+                </MobileStepperNav>
+              </ExperienceCard>
+            </AnimatePresence>
+          </ExperienceDetailsContainer>
+        </MobileTimelineContainer>
       </Container>
     </ExperienceSection>
   );
