@@ -50,22 +50,12 @@ const SkillsCategoriesContainer = styled.div`
 `;
 
 const SkillCategory = styled(motion.div)`
-  background-color: ${props => props.theme.colors.surface};
+  background-color: #23242a;
   border-radius: ${props => props.theme.borderRadius.lg};
   padding: ${props => props.theme.spacing.xl};
   box-shadow: ${props => props.theme.shadows.md};
   position: relative;
   overflow: hidden;
-  
-  &:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 5px;
-    height: 100%;
-    background: linear-gradient(to bottom, #8e44ad, #e74c3c, #f39c12);
-  }
 `;
 
 const CategoryTitle = styled.h3`
@@ -94,11 +84,10 @@ const CategoryIcon = styled.i`
 
 const SkillsGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
   gap: ${props => props.theme.spacing.md};
-  
   @media (max-width: ${props => props.theme.breakpoints.sm}) {
-    grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
   }
 `;
 
@@ -122,7 +111,7 @@ const getSkillColor = (name) => {
     llm: { main: '#1abc9c', gradient: 'linear-gradient(135deg, #1abc9c, #16a085)' },
     product: { main: '#f39c12', gradient: 'linear-gradient(135deg, #f39c12, #e67e22)' },
     agile: { main: '#2ecc71', gradient: 'linear-gradient(135deg, #2ecc71, #27ae60)' },
-    default: { main: '#8e44ad', gradient: 'linear-gradient(135deg, #8e44ad, #9b59b6)' }
+    default: { main: '#3a3d4d', gradient: 'linear-gradient(135deg, #3a3d4d, #5a627a)' }
   };
   
   const lowerName = name.toLowerCase();
@@ -141,31 +130,51 @@ const SkillItem = styled(motion.div)`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: ${props => props.theme.spacing.sm};
+  width: 70px;
+  height: 70px;
+  min-width: 70px;
+  min-height: 70px;
+  max-width: 70px;
+  max-height: 70px;
+  padding: ${props => props.theme.spacing.xs};
   border-radius: ${props => props.theme.borderRadius.xl};
-  background: ${props => props.background || 'linear-gradient(135deg, #8e44ad, #9b59b6)'};
+  background: ${props => props.background || 'linear-gradient(135deg, #3a3d4d, #5a627a)'};
   transition: all 0.3s ease;
   aspect-ratio: 1/1;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
     filter: brightness(1.1);
   }
+  @media (max-width: ${props => props.theme.breakpoints.sm}) {
+    width: 60px;
+    height: 60px;
+    min-width: 60px;
+    min-height: 60px;
+    max-width: 60px;
+    max-height: 60px;
+  }
 `;
 
 const SkillName = styled.span`
-  font-size: ${props => props.theme.fontSizes.xs};
+  font-size: 0.55rem;
   font-weight: ${props => props.theme.fontWeights.medium};
   color: white;
   text-align: center;
   margin-top: ${props => props.theme.spacing.xs};
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  max-width: 90%;
+  line-height: 1.1;
+  white-space: normal;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 `;
 
 const SkillIcon = styled.i`
-  font-size: 2rem;
+  font-size: 1.3rem;
   color: white;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 `;

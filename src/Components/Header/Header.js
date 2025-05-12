@@ -137,6 +137,9 @@ const NameHeading = styled.h1`
   transition: font-size 0.5s ease;
   animation: ${nameEntranceAnimation} 1.2s ease-out forwards;
   letter-spacing: 1px;
+  text-align: center;
+  width: 100%;
+  display: block;
   
   @media (max-width: 768px) {
     font-size: ${props => props.$scrolled ? '2.4rem' : '2.8rem'};
@@ -259,7 +262,7 @@ const Header = ({ portfolioData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   
-  const taglines = useMemo(() => ["Basketball", "Product", "Startups", "Analytics", "Sports Tech"], []);
+  const taglines = useMemo(() => ["Product Leader", "Basketball Analytics Enthusiast", "Big Tech -> Startups", "Sports Tech", "Off Ball Scorer"], []);
   
   useEffect(() => {
     const handleScroll = () => {

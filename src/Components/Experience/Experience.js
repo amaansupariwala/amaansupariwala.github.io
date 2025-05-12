@@ -245,6 +245,7 @@ const ExperienceHeader = styled.div`
 
 const ExperienceInfo = styled.div`
   flex: 1;
+  min-width: 0;
 `;
 
 const CompanyName = styled.h3`
@@ -254,17 +255,20 @@ const CompanyName = styled.h3`
   color: ${props => props.theme.colors.text};
   display: flex;
   align-items: center;
-  
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
   a {
     color: ${props => props.theme.colors.text};
     text-decoration: none;
     transition: color 0.3s ease;
-    
     &:hover {
       color: #e74c3c;
     }
   }
-  
   i {
     margin-left: ${props => props.theme.spacing.xs};
     font-size: ${props => props.theme.fontSizes.md};
