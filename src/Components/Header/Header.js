@@ -262,7 +262,7 @@ const Header = ({ portfolioData }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [typingSpeed, setTypingSpeed] = useState(150);
   
-  const taglines = useMemo(() => ["Product Leader", "Basketball Analytics Enthusiast", "Sports Tech Startup Builder", "Off Ball Scorer"], []);
+  const taglines = useMemo(() => ["Content Creator", "Product Leader", "Basketball Analytics Enthusiast", "Startup Builder", "Off-Ball Scorer", "Storyteller"], []);
   
   useEffect(() => {
     const handleScroll = () => {
@@ -316,8 +316,13 @@ const Header = ({ portfolioData }) => {
     setIsMenuOpen(!isMenuOpen);
   };
   
-  const scrollToAbout = () => {
-    const aboutSection = document.getElementById('about');
+  // const scrollToAbout = () => {
+  //   const aboutSection = document.getElementById('about');
+  //   aboutSection.scrollIntoView({ behavior: 'smooth' });
+  // };
+
+  const scrollToFeatured = () => {
+    const aboutSection = document.getElementById('featured-projects');
     aboutSection.scrollIntoView({ behavior: 'smooth' });
   };
 
@@ -334,7 +339,7 @@ const Header = ({ portfolioData }) => {
             <NavItem><NavLink href="#about">About</NavLink></NavItem>
             <NavItem><NavLink href="#experience">Experience</NavLink></NavItem>
             <NavItem><NavLink href="#skills">Skills</NavLink></NavItem>
-            <NavItem><NavLink href="#portfolio">Portfolio</NavLink></NavItem>
+            <NavItem><NavLink href="#featured-projects">Featured Projects</NavLink></NavItem>
             <NavItem><NavLink href="#contact">Contact</NavLink></NavItem>
           </NavLinks>
         </NavContainer>
@@ -359,7 +364,7 @@ const Header = ({ portfolioData }) => {
         ))}
       </SocialLinks>
       
-      <ScrollDownContainer onClick={scrollToAbout}>
+      <ScrollDownContainer onClick={scrollToFeatured}>
         <ScrollDownText>Let's scroll to learn more</ScrollDownText>
         <i className="fas fa-chevron-down fa-2x"></i>
       </ScrollDownContainer>
