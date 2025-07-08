@@ -1,25 +1,26 @@
 import { createGlobalStyle } from 'styled-components';
-import portfolioData from './portfolioData';
 
-const { colors } = portfolioData;
-
-// Theme object with color palette and other design tokens
+// New dark palette with deep black base and purple-gold gradients
 export const theme = {
   colors: {
-    primary: colors.primary,
-    secondary: colors.secondary,
-    accent1: colors.accent1,
-    accent2: colors.accent2,
-    gradient1: colors.gradient1,
-    gradient2: colors.gradient2,
-    background: colors.background,
-    surface: colors.surface,
-    text: colors.text,
-    textSecondary: colors.textSecondary,
+    primary: '#9333ea',      // Purple
+    secondary: '#f59e0b',    // Gold
+    accent: '#dc2626',       // Red accent
+    background: '#0c0c0f',   // Deep black base
+    surface: '#1a1a1d',     // Slightly lighter black
+    text: '#f8fafc',        // Off-white
+    textSecondary: '#94a3b8', // Gray
+    border: '#374151',       // Dark border
+    gradient: {
+      purple: '#9333ea',
+      gold: '#f59e0b',
+      purpleGold: 'linear-gradient(135deg, #9333ea 0%, #f59e0b 100%)',
+      subtle: 'linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%)'
+    }
   },
   fonts: {
-    primary: "'Poppins', 'Inter', sans-serif",
-    secondary: "'Inter', 'Poppins', sans-serif",
+    primary: "'Inter', 'Poppins', sans-serif",
+    secondary: "'Poppins', 'Inter', sans-serif",
   },
   fontSizes: {
     xs: '0.75rem',
@@ -76,6 +77,7 @@ export const theme = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
+    glow: '0 0 20px rgba(147, 51, 234, 0.3)',
   },
   transitions: {
     default: 'all 0.3s ease-in-out',
@@ -94,12 +96,17 @@ export const theme = {
     modal: 1400,
     popover: 1500,
     tooltip: 1600,
+    pacBorder: 9999,
   },
+  header: {
+    height: '60px',
+    mobileHeight: '56px',
+  }
 };
 
 // Global styles for the entire application
 export const GlobalStyles = createGlobalStyle`
-  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap');
   
   * {
     box-sizing: border-box;
@@ -116,6 +123,14 @@ export const GlobalStyles = createGlobalStyle`
     scroll-behavior: smooth;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  #root {
+    min-height: 100vh;
+    background-color: ${theme.colors.background};
+    position: relative;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -123,34 +138,36 @@ export const GlobalStyles = createGlobalStyle`
     font-weight: ${theme.fontWeights.bold};
     line-height: ${theme.lineHeights.tight};
     margin-bottom: ${theme.spacing.md};
+    color: ${theme.colors.text};
   }
   
   h1 {
-    font-size: ${theme.fontSizes['4xl']};
+    font-size: ${theme.fontSizes['5xl']};
   }
   
   h2 {
-    font-size: ${theme.fontSizes['3xl']};
+    font-size: ${theme.fontSizes['4xl']};
   }
   
   h3 {
-    font-size: ${theme.fontSizes['2xl']};
+    font-size: ${theme.fontSizes['3xl']};
   }
   
   h4 {
-    font-size: ${theme.fontSizes.xl};
+    font-size: ${theme.fontSizes['2xl']};
   }
   
   h5 {
-    font-size: ${theme.fontSizes.lg};
+    font-size: ${theme.fontSizes.xl};
   }
   
   h6 {
-    font-size: ${theme.fontSizes.md};
+    font-size: ${theme.fontSizes.lg};
   }
   
   p {
     margin-bottom: ${theme.spacing.md};
+    color: ${theme.colors.text};
   }
   
   a {
@@ -180,8 +197,27 @@ export const GlobalStyles = createGlobalStyle`
     padding: 0 ${theme.spacing.md};
   }
   
-  section {
-    padding: ${theme.spacing['3xl']} 0;
+  /* Page transitions */
+  .page-enter {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  
+  .page-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+  }
+  
+  .page-exit {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  
+  .page-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
   }
   
   /* Custom scrollbar */
@@ -190,17 +226,24 @@ export const GlobalStyles = createGlobalStyle`
   }
   
   ::-webkit-scrollbar-track {
-    background: ${theme.colors.background};
+    background: ${theme.colors.surface};
   }
   
   ::-webkit-scrollbar-thumb {
-    background: ${theme.colors.primary};
+    background: ${theme.colors.gradient.purpleGold};
     border-radius: ${theme.borderRadius.full};
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: ${theme.colors.secondary};
+    background: linear-gradient(135deg, #a855f7, #fbbf24);
   }
-`;
-
-export default theme; 
+  
+  /* Accessibility */
+  @media (prefers-reduced-motion: reduce) {
+    .pac-border,
+    .pac-sprite {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+    }
+  }
+`; 
