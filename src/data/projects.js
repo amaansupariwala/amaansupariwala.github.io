@@ -5,8 +5,8 @@ export const featuredProjects = [
     title: "Cerebro Sports",
     category: "Sports Tech",
     description: "Leading AI development for sports analytics platform with Mark Cuban investment. Built machine learning models for player performance prediction and real-time game analysis.",
-    image: "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-    videoUrl: "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+    image: "/images/cerebro-sports-project.jpg", // TODO: Upload cerebro-sports-project.jpg to /public/images/
+    videoUrl: "/images/cerebro-sports-demo.mp4", // TODO: Upload cerebro-sports-demo.mp4 to /public/images/
     url: "https://cerebrosports.com",
     github: "https://github.com/amaansupariwala",
     achievement: "Mark Cuban Investment",
@@ -18,8 +18,8 @@ export const featuredProjects = [
     title: "MIT Sloan Competition",
     category: "Startup Competition",
     description: "Winner of MIT Sloan Sports Analytics Conference startup competition. Developed innovative sports analytics solution that caught industry attention.",
-    image: "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-    videoUrl: "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+    image: "/images/sloan-win-stage.jpg", // Using existing sloan-win-stage.jpg
+    videoUrl: "/images/mit-sloan-presentation.mp4", // TODO: Upload mit-sloan-presentation.mp4 to /public/images/
     url: "https://sloanconference.com",
     github: "https://github.com/amaansupariwala",
     achievement: "MIT Sloan Winner",
@@ -31,8 +31,8 @@ export const featuredProjects = [
     title: "The Hoops Dojo",
     category: "Basketball Analytics",
     description: "Digital creator platform for basketball analytics and content creation. Building a community around NBA statistics and player insights.",
-    image: "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-    videoUrl: "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+    image: "/images/hoops-dojo-project.jpg", // TODO: Upload hoops-dojo-project.jpg to /public/images/
+    videoUrl: "/images/hoops-dojo-demo.mp4", // TODO: Upload hoops-dojo-demo.mp4 to /public/images/
     url: "https://www.youtube.com/@TheHoopsDojo/shorts",
     github: "https://github.com/amaansupariwala",
     achievement: "Growing Analytics Community",
@@ -44,8 +44,8 @@ export const featuredProjects = [
     title: "Amazon Route Optimizer",
     category: "Machine Learning",
     description: "AI-powered delivery route optimization system. Improved efficiency by 15% using machine learning algorithms and PySpark data processing.",
-    image: "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-    videoUrl: "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+    image: "/images/amazon-route-optimizer.jpg", // TODO: Upload amazon-route-optimizer.jpg to /public/images/
+    videoUrl: "/images/amazon-route-demo.mp4", // TODO: Upload amazon-route-demo.mp4 to /public/images/
     url: "https://amazon.com",
     github: "https://github.com/amaansupariwala",
     achievement: "15% Efficiency Improvement",

@@ -158,7 +158,7 @@ const Hero = ({ portfolioData }) => {
     <HeroSection>
       <VideoBackground>
         <ReactPlayer
-          url="https://res.cloudinary.com/demo/video/upload/v1/samples/sea-turtle.mp4"
+          url="/images/swish.mp4"
           playing
           loop
           muted

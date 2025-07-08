@@ -1,8 +1,8 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { Target, Clock, ArrowRight } from 'lucide-react';
+import { Clock, ArrowRight, X, Mail, User, CheckCircle } from 'lucide-react';
 
 const MissionContainer = styled.div`
   min-height: 100vh;
@@ -25,7 +25,7 @@ const Section = styled.section`
     left: 0;
     right: 0;
     height: 1px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
+    background: ${props => props.theme.colors.gradient.redPurple};
     opacity: 0.3;
   }
 `;
@@ -52,7 +52,7 @@ const SectionTitle = styled(motion.h1)`
     display: block;
     width: 120px;
     height: 4px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
+    background: ${props => props.theme.colors.gradient.redPurple};
     margin: ${props => props.theme.spacing.lg} auto 0;
     border-radius: 2px;
     position: absolute;
@@ -95,7 +95,7 @@ const PlaceholderCard = styled(motion.div)`
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(147, 51, 234, 0.1),
+      rgba(245, 158, 11, 0.1),
       transparent
     );
     animation: shimmer 2s infinite;
@@ -126,7 +126,7 @@ const ComingSoonBadge = styled.div`
   display: inline-flex;
   align-items: center;
   gap: ${props => props.theme.spacing.sm};
-  background: ${props => props.theme.colors.gradient.purpleGold};
+  background: ${props => props.theme.colors.gradient.redPurple};
   color: white;
   padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
   border-radius: ${props => props.theme.borderRadius.full};
@@ -172,7 +172,7 @@ const ProgressBar = styled.div`
     background: linear-gradient(
       90deg,
       transparent,
-      rgba(147, 51, 234, 0.3),
+      rgba(245, 158, 11, 0.3),
       transparent
     );
     animation: progressShimmer 2s infinite;
@@ -186,7 +186,7 @@ const ProgressBar = styled.div`
 
 const ProgressFill = styled(motion.div)`
   height: 100%;
-  background: ${props => props.theme.colors.gradient.purpleGold};
+  background: ${props => props.theme.colors.gradient.redPurple};
   border-radius: ${props => props.theme.borderRadius.full};
   width: 35%;
   position: relative;
@@ -220,95 +220,272 @@ const ProgressText = styled.p`
   margin-bottom: ${props => props.theme.spacing.xl};
 `;
 
-const PreviewSection = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: ${props => props.theme.spacing.lg};
-  margin-top: ${props => props.theme.spacing['2xl']};
-  width: 100%;
-`;
-
-const PreviewCard = styled(motion.div)`
-  background: ${props => props.theme.colors.surface};
-  border: 1px solid ${props => props.theme.colors.border};
-  border-radius: ${props => props.theme.borderRadius.lg};
-  padding: ${props => props.theme.spacing.lg};
-  text-align: center;
-  position: relative;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
-    border-radius: ${props => props.theme.borderRadius.lg} ${props => props.theme.borderRadius.lg} 0 0;
-  }
-  
-  &:hover {
-    border-color: ${props => props.theme.colors.primary};
-    transform: translateY(-5px);
-    transition: all 0.3s ease;
-  }
-`;
-
-const PreviewTitle = styled.h3`
-  font-size: ${props => props.theme.fontSizes.lg};
-  font-weight: ${props => props.theme.fontWeights.semibold};
-  color: ${props => props.theme.colors.text};
-  margin-bottom: ${props => props.theme.spacing.sm};
-`;
-
-const PreviewDescription = styled.p`
-  font-size: ${props => props.theme.fontSizes.sm};
-  color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.5;
-`;
-
 const NotifyButton = styled(motion.button)`
   display: flex;
   align-items: center;
   gap: ${props => props.theme.spacing.sm};
   padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
   background: transparent;
-  border: 2px solid ${props => props.theme.colors.primary};
-  color: ${props => props.theme.colors.primary};
+  border: 2px solid #10b981;
+  color: #10b981;
   border-radius: ${props => props.theme.borderRadius.full};
   font-weight: ${props => props.theme.fontWeights.medium};
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background: ${props => props.theme.colors.primary};
+    background: #10b981;
     color: white;
     transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  }
+`;
+
+const ModalOverlay = styled(motion.div)`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: ${props => props.theme.spacing.md};
+`;
+
+const ModalContent = styled(motion.div)`
+  background: ${props => props.theme.colors.surface};
+  border-radius: ${props => props.theme.borderRadius.xl};
+  padding: ${props => props.theme.spacing['2xl']};
+  width: 100%;
+  max-width: 500px;
+  position: relative;
+  border: 1px solid ${props => props.theme.colors.border};
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+`;
+
+const CloseButton = styled.button`
+  position: absolute;
+  top: ${props => props.theme.spacing.md};
+  right: ${props => props.theme.spacing.md};
+  background: none;
+  border: none;
+  color: ${props => props.theme.colors.textSecondary};
+  cursor: pointer;
+  padding: ${props => props.theme.spacing.sm};
+  border-radius: ${props => props.theme.borderRadius.md};
+  transition: all 0.2s ease;
+  
+  &:hover {
+    background: ${props => props.theme.colors.border};
+    color: ${props => props.theme.colors.text};
+  }
+`;
+
+const ModalTitle = styled.h2`
+  color: ${props => props.theme.colors.text};
+  font-size: ${props => props.theme.fontSizes['2xl']};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  margin-bottom: ${props => props.theme.spacing.sm};
+  text-align: center;
+`;
+
+const ModalSubtitle = styled.p`
+  color: ${props => props.theme.colors.textSecondary};
+  font-size: ${props => props.theme.fontSizes.md};
+  text-align: center;
+  margin-bottom: ${props => props.theme.spacing.xl};
+  line-height: 1.5;
+`;
+
+const Form = styled.form`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing.lg};
+`;
+
+const InputGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: ${props => props.theme.spacing.xs};
+`;
+
+const Label = styled.label`
+  color: ${props => props.theme.colors.text};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.xs};
+  
+  svg {
+    color: ${props => props.theme.colors.textSecondary};
+  }
+`;
+
+const Input = styled.input`
+  background: ${props => props.theme.colors.background};
+  border: 2px solid ${props => props.theme.colors.border};
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md};
+  color: ${props => props.theme.colors.text};
+  font-size: ${props => props.theme.fontSizes.md};
+  transition: all 0.3s ease;
+  
+  &:focus {
+    outline: none;
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  }
+  
+  &::placeholder {
+    color: ${props => props.theme.colors.textSecondary};
+  }
+`;
+
+const SubmitButton = styled(motion.button)`
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: ${props => props.theme.borderRadius.md};
+  padding: ${props => props.theme.spacing.md} ${props => props.theme.spacing.xl};
+  font-size: ${props => props.theme.fontSizes.md};
+  font-weight: ${props => props.theme.fontWeights.semibold};
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+`;
+
+const StatusMessage = styled.div`
+  padding: ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.md};
+  font-size: ${props => props.theme.fontSizes.sm};
+  text-align: center;
+  margin-top: ${props => props.theme.spacing.md};
+  
+  &.success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.3);
+  }
+  
+  &.error {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border: 1px solid rgba(239, 68, 68, 0.3);
   }
 `;
 
 const Mission = () => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '' });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [status, setStatus] = useState(null);
 
-  const previewItems = [
-    {
-      title: "AI Innovation Framework",
-      description: "Developing a comprehensive approach to AI implementation in various industries."
-    },
-    {
-      title: "Sports Analytics Platform",
-      description: "Creating next-generation tools for sports performance analysis and prediction."
-    },
-    {
-      title: "Data-Driven Solutions",
-      description: "Building scalable systems that turn complex data into actionable insights."
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setStatus(null);
+
+    try {
+      // Using Formspree to send form submissions directly to your email
+      const response = await fetch('https://formspree.io/f/xgvyjaqv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          message: `New mailing list signup from ${formData.name} (${formData.email}) on ${new Date().toLocaleString()}. They want to be notified about your mission page updates!`,
+          _subject: 'New Mailing List Signup - Mission Page',
+          _replyto: formData.email,
+        }),
+      });
+
+      if (response.ok) {
+        setStatus({ 
+          type: 'success', 
+          message: 'Thanks! You\'ve been added to the mailing list. Check your email for confirmation!' 
+        });
+        setFormData({ name: '', email: '' });
+        
+        setTimeout(() => {
+          setShowModal(false);
+          setStatus(null);
+        }, 3000);
+      } else {
+        throw new Error('Form submission failed');
+      }
+    } catch (error) {
+      console.error('Form submission error:', error);
+      // Fallback to localStorage if Formspree fails
+      const existingSignups = JSON.parse(localStorage.getItem('mailing_list') || '[]');
+      const newSignup = {
+        name: formData.name,
+        email: formData.email,
+        timestamp: new Date().toISOString(),
+        page: 'Mission'
+      };
+      
+      const emailExists = existingSignups.some(signup => signup.email === formData.email);
+      
+      if (!emailExists) {
+        existingSignups.push(newSignup);
+        localStorage.setItem('mailing_list', JSON.stringify(existingSignups));
+      }
+
+      setStatus({ 
+        type: 'success', 
+        message: 'Thanks! Your information has been saved. You\'ll be notified when ready!' 
+      });
+      setFormData({ name: '', email: '' });
+      
+      setTimeout(() => {
+        setShowModal(false);
+        setStatus(null);
+      }, 2500);
+    } finally {
+      setIsSubmitting(false);
     }
-  ];
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setStatus(null);
+    setFormData({ name: '', email: '' });
+  };
 
   const handleNotifyClick = () => {
-    // This would typically open a modal or redirect to a signup form
-    alert("Thanks for your interest! I'll notify you when my mission page is ready.");
+    setShowModal(true);
+  };
+
+  // Copy email to clipboard functionality
+  const copyEmailToClipboard = () => {
+    navigator.clipboard.writeText('amaan.supariwala@gmail.com').then(() => {
+      setStatus({ type: 'success', message: 'Email copied to clipboard!' });
+      setTimeout(() => setStatus(null), 2000);
+    });
   };
 
   return (
@@ -320,7 +497,6 @@ const Mission = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.8 }}
           >
-            <Target size={40} />
             My Mission
           </SectionTitle>
           
@@ -335,8 +511,8 @@ const Mission = () => {
               </PlaceholderText>
               
               <PlaceholderSubText>
-                My mission statement is currently being crafted to reflect my vision for the future 
-                of AI, sports analytics, and technological innovation. Stay tuned for something amazing!
+                My mission statement is currently being crafted to reflect my vision for myself and the world. 
+                For now I know I love AI, hoops, and content. Come back soon!
               </PlaceholderSubText>
               
               <ComingSoonBadge>
@@ -359,20 +535,6 @@ const Mission = () => {
               </ProgressText>
             </ProgressSection>
             
-            <PreviewSection>
-              {previewItems.map((item, index) => (
-                <PreviewCard
-                  key={index}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.6, delay: 1 + index * 0.1 }}
-                >
-                  <PreviewTitle>{item.title}</PreviewTitle>
-                  <PreviewDescription>{item.description}</PreviewDescription>
-                </PreviewCard>
-              ))}
-            </PreviewSection>
-            
             <NotifyButton
               onClick={handleNotifyClick}
               initial={{ opacity: 0 }}
@@ -387,6 +549,103 @@ const Mission = () => {
           </MissionContent>
         </Container>
       </Section>
+
+      <AnimatePresence>
+        {showModal && (
+          <ModalOverlay
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={closeModal}
+          >
+            <ModalContent
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <CloseButton onClick={closeModal}>
+                <X size={20} />
+              </CloseButton>
+              
+              <ModalTitle>Join the Mailing List</ModalTitle>
+              <ModalSubtitle>
+                Be the first to know when my mission page is ready! Your info stays private and secure.
+              </ModalSubtitle>
+              
+              <Form onSubmit={handleSubmit}>
+                <InputGroup>
+                  <Label>
+                    <User size={16} />
+                    Name
+                  </Label>
+                  <Input
+                    type="text"
+                    name="name"
+                    placeholder="Enter your name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </InputGroup>
+                
+                <InputGroup>
+                  <Label>
+                    <Mail size={16} />
+                    Email
+                  </Label>
+                  <Input
+                    type="email"
+                    name="email"
+                    placeholder="Enter your email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                  />
+                </InputGroup>
+                
+                <SubmitButton
+                  type="submit"
+                  disabled={isSubmitting}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  {isSubmitting ? 'Joining...' : 'Join Mailing List'}
+                </SubmitButton>
+                
+                {status && (
+                  <StatusMessage className={status.type}>
+                    {status.type === 'success' && <CheckCircle size={16} style={{ marginRight: '8px' }} />}
+                    {status.message}
+                  </StatusMessage>
+                )}
+                
+                <div style={{ textAlign: 'center', marginTop: '1rem', paddingTop: '1rem', borderTop: '1px solid #374151' }}>
+                  <p style={{ fontSize: '0.875rem', color: '#9ca3af', marginBottom: '0.5rem' }}>
+                    Or contact me directly:
+                  </p>
+                  <button
+                    type="button"
+                    onClick={copyEmailToClipboard}
+                    style={{
+                      background: 'none',
+                      border: '1px solid #10b981',
+                      color: '#10b981',
+                      padding: '0.5rem 1rem',
+                      borderRadius: '0.375rem',
+                      fontSize: '0.875rem',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                  >
+                    📧 amaan.supariwala@gmail.com
+                  </button>
+                </div>
+              </Form>
+            </ModalContent>
+          </ModalOverlay>
+        )}
+      </AnimatePresence>
     </MissionContainer>
   );
 };

@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { Mail, Github, Linkedin, Twitter, Youtube, Instagram, ArrowUp } from 'lucide-react';
+import { Github, Linkedin, Twitter, Youtube, Instagram, ArrowUp, Check } from 'lucide-react';
 import portfolioData from '../../portfolioData';
+
+// Custom TikTok Icon Component
+const TikTokIcon = ({ size = 20 }) => (
+  <svg 
+    width={size} 
+    height={size} 
+    viewBox="0 0 24 24" 
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-.04-.1z"/>
+  </svg>
+);
 
 const FooterSection = styled.footer`
   background: ${props => props.theme.colors.surface};
@@ -40,7 +53,7 @@ const FooterTitle = styled.h3`
   font-size: ${props => props.theme.fontSizes.xl};
   font-weight: ${props => props.theme.fontWeights.bold};
   margin-bottom: ${props => props.theme.spacing.md};
-  background: ${props => props.theme.colors.gradient.purpleGold};
+  background: ${props => props.theme.colors.gradient.redPurple};
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -65,14 +78,25 @@ const ContactInfo = styled.div`
   }
 `;
 
-const ContactLink = styled.a`
+const ContactButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.xs};
+  background: none;
+  border: none;
   color: ${props => props.theme.colors.primary};
-  text-decoration: none;
   font-weight: ${props => props.theme.fontWeights.medium};
+  font-size: ${props => props.theme.fontSizes.md};
+  cursor: pointer;
   transition: ${props => props.theme.transitions.default};
+  padding: ${props => props.theme.spacing.xs} 0;
   
   &:hover {
     color: ${props => props.theme.colors.secondary};
+  }
+  
+  &.copied {
+    color: #10b981;
   }
 `;
 
@@ -130,7 +154,7 @@ const BackToTop = styled(motion.button)`
   display: flex;
   align-items: center;
   gap: ${props => props.theme.spacing.xs};
-  background: ${props => props.theme.colors.gradient.purpleGold};
+  background: ${props => props.theme.colors.gradient.redPurple};
   color: white;
   border: none;
   padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
@@ -166,6 +190,8 @@ const FooterNote = styled.p`
 `;
 
 const Footer = () => {
+  const [emailCopied, setEmailCopied] = useState(false);
+
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -173,12 +199,36 @@ const Footer = () => {
     });
   };
 
+  const copyEmail = async () => {
+    try {
+      await navigator.clipboard.writeText(portfolioData.email);
+      setEmailCopied(true);
+      setTimeout(() => setEmailCopied(false), 2000);
+    } catch (err) {
+      // Fallback for older browsers
+      const textArea = document.createElement('textarea');
+      textArea.value = portfolioData.email;
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        setEmailCopied(true);
+        setTimeout(() => setEmailCopied(false), 2000);
+      } catch (fallbackErr) {
+        console.error('Failed to copy email:', fallbackErr);
+      }
+      document.body.removeChild(textArea);
+    }
+  };
+
   const socialIcons = {
-    linkedin: Linkedin,
-    github: Github,
-    twitter: Twitter,
-    youtube: Youtube,
     instagram: Instagram,
+    tiktok: TikTokIcon,
+    twitter: Twitter,
+    linkedin: Linkedin,
+    youtube: Youtube,
+    github: Github,
   };
 
   return (
@@ -188,17 +238,25 @@ const Footer = () => {
           <FooterInfo>
             <FooterTitle>Let's Connect</FooterTitle>
             <FooterDescription>
-              Always open to discussing innovative projects, collaboration opportunities, 
-              or just connecting with fellow tech enthusiasts.
+              Always open to discussing innovative projects, collaboration opportunities, or just connecting with fellow tech enthusiasts.
             </FooterDescription>
             <ContactInfo>
-              <Mail size={20} />
-              <ContactLink href={`mailto:${portfolioData.email}`}>
-                {portfolioData.email}
-              </ContactLink>
+              <ContactButton
+                onClick={copyEmail}
+                className={emailCopied ? 'copied' : ''}
+              >
+                {emailCopied ? (
+                  <>
+                    <Check size={16} />
+                    Email Copied!
+                  </>
+                ) : (
+                  portfolioData.email
+                )}
+              </ContactButton>
             </ContactInfo>
             <ContactInfo>
-              <span>📍</span>
+              <span></span>
               <span style={{ color: '#94a3b8' }}>{portfolioData.location}</span>
             </ContactInfo>
           </FooterInfo>
@@ -239,8 +297,7 @@ const Footer = () => {
             © {new Date().getFullYear()} {portfolioData.name}. All rights reserved.
           </Copyright>
           <FooterNote>
-            Built with React, Styled Components, and Framer Motion. 
-            Deployed on GitHub Pages.
+            May vibe coded this...
           </FooterNote>
         </FooterBottom>
       </Container>

@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useInView } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Play, Pause, ExternalLink, Github } from 'lucide-react';
+import { ChevronLeft, ChevronRight, ExternalLink } from 'lucide-react';
 import { featuredProjects } from '../data/projects';
 
 const ProjectsContainer = styled.div`
@@ -26,7 +26,7 @@ const Section = styled.section`
     left: 0;
     right: 0;
     height: 1px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
+    background: ${props => props.theme.colors.gradient.redPurple};
     opacity: 0.3;
   }
 `;
@@ -49,7 +49,7 @@ const SectionTitle = styled(motion.h1)`
     display: block;
     width: 120px;
     height: 4px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
+    background: ${props => props.theme.colors.gradient.redPurple};
     margin: ${props => props.theme.spacing.lg} auto 0;
     border-radius: 2px;
   }
@@ -75,9 +75,10 @@ const ProjectCard = styled(motion.div)`
   border-radius: ${props => props.theme.borderRadius.xl};
   overflow: hidden;
   position: relative;
-  height: 500px;
+  height: 600px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   border: 1px solid ${props => props.theme.colors.border};
+  cursor: pointer;
   
   &::before {
     content: '';
@@ -86,152 +87,228 @@ const ProjectCard = styled(motion.div)`
     left: 0;
     right: 0;
     height: 4px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
+    background: ${props => props.theme.colors.gradient.redPurple};
     z-index: 10;
   }
   
   &:hover {
     border-color: ${props => props.theme.colors.primary};
-    transform: translateY(-5px);
-    transition: all 0.3s ease;
+    transform: translateY(-8px);
+    transition: all 0.4s ease;
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
   }
 `;
 
-const VideoContainer = styled.div`
-  position: relative;
-  height: 60%;
-  overflow: hidden;
-  background: #000;
-`;
-
-const Video = styled.video`
+const PlaceholderImage = styled.div`
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-  
-  ${ProjectCard}:hover & {
-    transform: scale(1.05);
-  }
-`;
-
-const VideoOverlay = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    to bottom,
-    transparent 0%,
-    rgba(0, 0, 0, 0.3) 60%,
-    rgba(0, 0, 0, 0.8) 100%
-  );
-  z-index: 2;
-`;
-
-const PlayPauseButton = styled.button`
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(147, 51, 234, 0.8);
-  border: none;
-  color: white;
-  cursor: pointer;
-  z-index: 3;
-  transition: all 0.3s ease;
-  
-  &:hover {
-    background: rgba(147, 51, 234, 1);
-    transform: translate(-50%, -50%) scale(1.1);
-  }
-`;
-
-const ProjectContent = styled.div`
-  padding: ${props => props.theme.spacing.xl};
-  height: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-`;
-
-const ProjectHeader = styled.div`
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
-
-const ProjectTitle = styled.h3`
-  font-size: ${props => props.theme.fontSizes.xl};
-  font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.text};
-  margin-bottom: ${props => props.theme.spacing.xs};
-`;
-
-const ProjectCategory = styled.p`
-  font-size: ${props => props.theme.fontSizes.sm};
-  color: ${props => props.theme.colors.primary};
-  font-weight: ${props => props.theme.fontWeights.medium};
-  text-transform: uppercase;
-  letter-spacing: 1px;
-`;
-
-const ProjectDescription = styled.p`
-  font-size: ${props => props.theme.fontSizes.md};
-  color: ${props => props.theme.colors.textSecondary};
-  line-height: 1.6;
-  margin-bottom: ${props => props.theme.spacing.md};
-`;
-
-const ProjectFooter = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: ${props => props.theme.spacing.md};
-`;
-
-const ProjectLinks = styled.div`
-  display: flex;
-  gap: ${props => props.theme.spacing.sm};
-`;
-
-const ProjectLink = styled.a`
+  background: ${props => props.theme.colors.surface};
+  border: 3px dashed ${props => props.theme.colors.border};
   display: flex;
   align-items: center;
-  gap: ${props => props.theme.spacing.xs};
-  padding: ${props => props.theme.spacing.sm} ${props => props.theme.spacing.md};
-  background: ${props => props.theme.colors.gradient.purpleGold};
-  color: white;
-  text-decoration: none;
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-size: ${props => props.theme.fontSizes.sm};
-  font-weight: ${props => props.theme.fontWeights.medium};
-  transition: all 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: ${props => props.theme.shadows.glow};
-  }
-`;
-
-const Achievement = styled.div`
-  background: rgba(245, 158, 11, 0.2);
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  border-radius: ${props => props.theme.borderRadius.md};
-  font-size: ${props => props.theme.fontSizes.xs};
-  color: ${props => props.theme.colors.secondary};
-  font-weight: ${props => props.theme.fontWeights.medium};
-  display: flex;
-  align-items: center;
-  gap: ${props => props.theme.spacing.xs};
-  border: 1px solid ${props => props.theme.colors.secondary};
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  background-image: 
+    linear-gradient(45deg, rgba(245, 158, 11, 0.05) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(245, 158, 11, 0.05) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(245, 158, 11, 0.05) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(245, 158, 11, 0.05) 75%);
+  background-size: 60px 60px;
+  background-position: 0 0, 0 30px, 30px -30px, -30px 0;
   
   &::before {
-    content: '🏆';
+    content: '🖼️';
+    font-size: 4rem;
+    opacity: 0.3;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
+  
+  &::after {
+    content: 'Project Image Placeholder';
+    position: absolute;
+    bottom: ${props => props.theme.spacing.lg};
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: ${props => props.theme.fontSizes.md};
+    color: ${props => props.theme.colors.textSecondary};
+    opacity: 0.6;
+    text-align: center;
+  }
+`;
+
+const stickyHover = keyframes`
+  0% { transform: rotate(-2deg) scale(1); }
+  50% { transform: rotate(-1deg) scale(1.02); }
+  100% { transform: rotate(-2deg) scale(1); }
+`;
+
+const StickyNote = styled(motion.div)`
+  position: absolute;
+  padding: ${props => props.theme.spacing.lg} ${props => props.theme.spacing.xl};
+  border-radius: 8px 8px 8px 20px;
+  transform: rotate(-2deg);
+  box-shadow: 
+    0 8px 16px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 15;
+  min-width: 280px;
+  max-width: 350px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* Darker, more dull backgrounds for better text visibility */
+  background: linear-gradient(135deg, #8B7355 0%, #A0855B 100%);
+  
+  &.top-right {
+    top: ${props => props.theme.spacing.lg};
+    right: ${props => props.theme.spacing.lg};
+  }
+  
+  &.bottom-right {
+    bottom: ${props => props.theme.spacing.lg};
+    right: ${props => props.theme.spacing.lg};
+    background: linear-gradient(135deg, #8B7355 0%, #A0855B 100%);
+  }
+  
+  &.top-left {
+    top: ${props => props.theme.spacing.lg};
+    left: ${props => props.theme.spacing.lg};
+    transform: rotate(1deg);
+    background: linear-gradient(135deg, #2F5233 0%, #3A5F3E 100%);
+  }
+  
+  &.bottom-left {
+    bottom: ${props => props.theme.spacing.lg};
+    left: ${props => props.theme.spacing.lg};
+    transform: rotate(2deg);
+    background: linear-gradient(135deg, #1A365D 0%, #2C5282 100%);
+  }
+  
+  &::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 20px;
+    width: 40px;
+    height: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 50%;
+    transform: rotate(-20deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  }
+  
+  &:hover {
+    animation: ${stickyHover} 0.6s ease-in-out;
+    transform: rotate(-1deg) scale(1.05) translateY(-2px);
+    
+    &.top-left {
+      transform: rotate(0deg) scale(1.05) translateY(-2px);
+      box-shadow: 
+        0 12px 24px rgba(47, 82, 51, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    &.bottom-left {
+      transform: rotate(1deg) scale(1.05) translateY(-2px);
+      box-shadow: 
+        0 12px 24px rgba(26, 54, 93, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 6px 12px rgba(0, 0, 0, 0.3);
+    }
+    
+    box-shadow: 
+      0 12px 24px rgba(139, 115, 85, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.4),
+      0 6px 12px rgba(0, 0, 0, 0.3);
+  }
+`;
+
+const StickyTitle = styled.h3`
+  color: #ffffff;
+  font-size: ${props => props.theme.fontSizes.xl};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  margin-bottom: ${props => props.theme.spacing.sm};
+  font-family: 'Nunito', 'Arial', sans-serif;
+  line-height: 1.2;
+  text-shadow: 
+    0 2px 4px rgba(0, 0, 0, 0.7),
+    0 1px 2px rgba(0, 0, 0, 0.5);
+`;
+
+const StickyCategory = styled.p`
+  color: #e2e8f0;
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: ${props => props.theme.spacing.sm};
+  font-family: 'Nunito', 'Arial', sans-serif;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+`;
+
+const StickyDescription = styled.p`
+  color: #f7fafc;
+  font-size: ${props => props.theme.fontSizes.md};
+  line-height: 1.4;
+  margin-bottom: ${props => props.theme.spacing.md};
+  font-family: 'Nunito', 'Arial', sans-serif;
+  font-weight: ${props => props.theme.fontWeights.medium};
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+`;
+
+const StickyLink = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.xs};
+  color: #ffffff;
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.bold};
+  font-family: 'Nunito', 'Arial', sans-serif;
+  text-shadow: 
+    0 1px 3px rgba(0, 0, 0, 0.6),
+    0 1px 2px rgba(0, 0, 0, 0.4);
+  
+  svg {
+    transition: transform 0.2s ease;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.5));
+  }
+  
+  &:hover svg {
+    transform: translateX(2px);
+  }
+`;
+
+const TagsContainer = styled.div`
+  position: absolute;
+  bottom: ${props => props.theme.spacing.md};
+  left: ${props => props.theme.spacing.md};
+  display: flex;
+  flex-wrap: wrap;
+  gap: ${props => props.theme.spacing.xs};
+  max-width: 50%;
+  z-index: 12;
+`;
+
+const Tag = styled.span`
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+  background: rgba(0, 0, 0, 0.8);
+  color: white;
+  border-radius: ${props => props.theme.borderRadius.sm};
+  font-size: ${props => props.theme.fontSizes.xs};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 `;
 
 const NavigationButton = styled.button`
@@ -241,15 +318,15 @@ const NavigationButton = styled.button`
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: rgba(147, 51, 234, 0.8);
+  background: rgba(245, 158, 11, 0.9);
   border: none;
   color: white;
   cursor: pointer;
-  z-index: 4;
+  z-index: 20;
   transition: all 0.3s ease;
   
   &:hover {
-    background: rgba(147, 51, 234, 1);
+    background: rgba(245, 158, 11, 1);
     transform: translateY(-50%) scale(1.1);
   }
   
@@ -279,35 +356,17 @@ const Indicator = styled.button`
   height: 12px;
   border-radius: 50%;
   border: none;
-  background: ${props => props.$active ? props.theme.colors.primary : 'rgba(147, 51, 234, 0.3)'};
+  background: ${props => props.$active ? props.theme.colors.primary : 'rgba(245, 158, 11, 0.3)'};
   cursor: pointer;
   transition: all 0.3s ease;
   
   &:hover {
-    background: ${props => props.$active ? props.theme.colors.primary : 'rgba(147, 51, 234, 0.6)'};
+    background: ${props => props.$active ? props.theme.colors.primary : 'rgba(245, 158, 11, 0.6)'};
   }
-`;
-
-const TagsContainer = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: ${props => props.theme.spacing.xs};
-  margin-top: ${props => props.theme.spacing.md};
-`;
-
-const Tag = styled.span`
-  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
-  background: rgba(147, 51, 234, 0.2);
-  color: ${props => props.theme.colors.primary};
-  border-radius: ${props => props.theme.borderRadius.sm};
-  font-size: ${props => props.theme.fontSizes.xs};
-  font-weight: ${props => props.theme.fontWeights.medium};
-  border: 1px solid rgba(147, 51, 234, 0.3);
 `;
 
 const Projects = () => {
   const [currentProject, setCurrentProject] = useState(0);
-  const [playingVideo, setPlayingVideo] = useState({});
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
@@ -321,17 +380,30 @@ const Projects = () => {
     setCurrentProject((prev) => (prev - 1 + projects.length) % projects.length);
   };
 
-  const toggleVideoPlay = (index) => {
-    setPlayingVideo(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
+  const handleProjectClick = (project) => {
+    if (project?.url) {
+      window.open(project.url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
+  const getStickyPosition = (index) => {
+    const positions = ['top-right', 'bottom-right', 'top-left', 'bottom-left'];
+    return positions[index % positions.length];
   };
 
   const cardVariants = {
     hidden: { opacity: 0, x: 100 },
     visible: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -100 }
+  };
+
+  const stickyVariants = {
+    hidden: { opacity: 0, scale: 0.8, rotate: 0 },
+    visible: { 
+      opacity: 1, 
+      scale: 1,
+      transition: { duration: 0.5, delay: 0.3 }
+    }
   };
 
   return (
@@ -364,61 +436,32 @@ const Projects = () => {
                 animate="visible"
                 exit="exit"
                 transition={{ duration: 0.5, ease: "easeInOut" }}
+                onClick={() => handleProjectClick(projects[currentProject])}
               >
-                <VideoContainer>
-                  <Video
-                    src={projects[currentProject]?.videoUrl}
-                    poster={projects[currentProject]?.image}
-                    muted
-                    loop
-                    playsInline
-                    autoPlay={playingVideo[currentProject]}
-                  />
-                  <VideoOverlay />
-                  <PlayPauseButton onClick={() => toggleVideoPlay(currentProject)}>
-                    {playingVideo[currentProject] ? (
-                      <Pause size={24} />
-                    ) : (
-                      <Play size={24} />
-                    )}
-                  </PlayPauseButton>
-                </VideoContainer>
+                <PlaceholderImage />
                 
-                <ProjectContent>
-                  <div>
-                    <ProjectHeader>
-                      <ProjectTitle>{projects[currentProject]?.title}</ProjectTitle>
-                      <ProjectCategory>{projects[currentProject]?.category}</ProjectCategory>
-                    </ProjectHeader>
-                    
-                    <ProjectDescription>
-                      {projects[currentProject]?.description}
-                    </ProjectDescription>
-                    
-                    <TagsContainer>
-                      {projects[currentProject]?.tags?.map((tag, index) => (
-                        <Tag key={index}>{tag}</Tag>
-                      ))}
-                    </TagsContainer>
-                  </div>
-                  
-                  <ProjectFooter>
-                    <ProjectLinks>
-                      <ProjectLink href={projects[currentProject]?.url} target="_blank" rel="noopener noreferrer">
-                        <ExternalLink size={16} />
-                        View Project
-                      </ProjectLink>
-                      <ProjectLink href={projects[currentProject]?.github} target="_blank" rel="noopener noreferrer">
-                        <Github size={16} />
-                        Code
-                      </ProjectLink>
-                    </ProjectLinks>
-                    
-                    <Achievement>
-                      {projects[currentProject]?.achievement}
-                    </Achievement>
-                  </ProjectFooter>
-                </ProjectContent>
+                <StickyNote
+                  className={getStickyPosition(currentProject)}
+                  variants={stickyVariants}
+                  initial="hidden"
+                  animate="visible"
+                >
+                  <StickyCategory>{projects[currentProject]?.category}</StickyCategory>
+                  <StickyTitle>{projects[currentProject]?.title}</StickyTitle>
+                  <StickyDescription>
+                    {projects[currentProject]?.description}
+                  </StickyDescription>
+                  <StickyLink>
+                    <span>Click to explore</span>
+                    <ExternalLink size={14} />
+                  </StickyLink>
+                </StickyNote>
+                
+                <TagsContainer>
+                  {projects[currentProject]?.tags?.slice(0, 4).map((tag, index) => (
+                    <Tag key={index}>{tag}</Tag>
+                  ))}
+                </TagsContainer>
               </ProjectCard>
             </AnimatePresence>
             

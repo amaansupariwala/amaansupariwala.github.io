@@ -1,10 +1,10 @@
 import { createGlobalStyle } from 'styled-components';
 
-// New dark palette with deep black base and purple-gold gradients
+// New dark palette with deep black base and red-gold-purple gradients
 export const theme = {
   colors: {
-    primary: '#9333ea',      // Purple
-    secondary: '#f59e0b',    // Gold
+    primary: '#dc2626',      // Red (primary color)
+    secondary: '#d97706',    // Darker gold/amber
     accent: '#dc2626',       // Red accent
     background: '#0c0c0f',   // Deep black base
     surface: '#1a1a1d',     // Slightly lighter black
@@ -12,10 +12,14 @@ export const theme = {
     textSecondary: '#94a3b8', // Gray
     border: '#374151',       // Dark border
     gradient: {
-      purple: '#9333ea',
-      gold: '#f59e0b',
-      purpleGold: 'linear-gradient(135deg, #9333ea 0%, #f59e0b 100%)',
-      subtle: 'linear-gradient(135deg, rgba(147, 51, 234, 0.1) 0%, rgba(245, 158, 11, 0.1) 100%)'
+      red: '#dc2626',
+      gold: '#d97706',
+      purple: '#7c2d12',
+      redGold: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 25%, #d97706 75%, #92400e 100%)',
+      goldRed: 'linear-gradient(135deg, #d97706 0%, #dc2626 50%, #7c2d12 100%)',
+      redPurple: 'linear-gradient(135deg, #dc2626 0%, #b91c1c 35%, #7c2d12 80%, #451a03 100%)',
+      purpleRed: 'linear-gradient(135deg, #7c2d12 0%, #dc2626 60%, #b91c1c 100%)',
+      subtle: 'linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(217, 119, 6, 0.05) 50%, rgba(124, 45, 18, 0.08) 100%)'
     }
   },
   fonts: {
@@ -77,7 +81,7 @@ export const theme = {
     md: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',
     lg: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
     xl: '0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)',
-    glow: '0 0 20px rgba(147, 51, 234, 0.3)',
+    glow: '0 0 20px rgba(217, 119, 6, 0.4)',
   },
   transitions: {
     default: 'all 0.3s ease-in-out',
@@ -96,7 +100,6 @@ export const theme = {
     modal: 1400,
     popover: 1500,
     tooltip: 1600,
-    pacBorder: 9999,
   },
   header: {
     height: '60px',
@@ -230,18 +233,17 @@ export const GlobalStyles = createGlobalStyle`
   }
   
   ::-webkit-scrollbar-thumb {
-    background: ${theme.colors.gradient.purpleGold};
+    background: ${theme.colors.gradient.redPurple};
     border-radius: ${theme.borderRadius.full};
   }
   
   ::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #a855f7, #fbbf24);
+    background: linear-gradient(135deg, #ef4444, #7c2d12);
   }
   
   /* Accessibility */
   @media (prefers-reduced-motion: reduce) {
-    .pac-border,
-    .pac-sprite {
+    * {
       animation-duration: 0.01ms !important;
       animation-iteration-count: 1 !important;
     }

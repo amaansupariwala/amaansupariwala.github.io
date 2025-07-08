@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -9,11 +9,12 @@ const HeaderContainer = styled.header`
   left: 0;
   right: 0;
   height: ${props => props.theme.header.height};
-  background: ${props => props.$scrolled ? 'rgba(12, 12, 15, 0.9)' : 'transparent'};
-  backdrop-filter: ${props => props.$scrolled ? 'blur(10px)' : 'none'};
-  border-bottom: ${props => props.$scrolled ? '1px solid rgba(147, 51, 234, 0.2)' : 'none'};
+  background: rgba(12, 12, 15, 0.95);
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(220, 38, 38, 0.3);
   z-index: ${props => props.theme.zIndices.sticky};
   transition: all 0.3s ease;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
     height: ${props => props.theme.header.mobileHeight};
@@ -31,23 +32,19 @@ const Nav = styled.nav`
 `;
 
 const Logo = styled(Link)`
-  font-size: ${props => props.theme.fontSizes.xl};
-  font-weight: ${props => props.theme.fontWeights.bold};
-  color: ${props => props.theme.colors.text};
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  position: relative;
   
-  &::before {
-    content: 'AS';
-    background: ${props => props.theme.colors.gradient.purpleGold};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
+  img {
+    height: 40px;
+    width: auto;
+    transition: ${props => props.theme.transitions.default};
   }
   
-  &:hover {
-    color: ${props => props.theme.colors.text};
+  &:hover img {
+    transform: scale(1.05);
+    filter: brightness(1.1);
   }
 `;
 
@@ -64,18 +61,18 @@ const NavLinks = styled.ul`
     top: 100%;
     left: 0;
     right: 0;
-    background: rgba(12, 12, 15, 0.95);
-    backdrop-filter: blur(10px);
+    background: rgba(12, 12, 15, 0.98);
+    backdrop-filter: blur(15px);
     flex-direction: column;
     padding: ${props => props.theme.spacing.lg};
     gap: ${props => props.theme.spacing.lg};
-    border-bottom: 1px solid rgba(147, 51, 234, 0.2);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(220, 38, 38, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
   }
 `;
 
 const NavLink = styled(Link)`
-  color: ${props => props.theme.colors.textSecondary};
+  color: ${props => props.theme.colors.text};
   text-decoration: none;
   font-weight: ${props => props.theme.fontWeights.medium};
   text-transform: uppercase;
@@ -84,9 +81,10 @@ const NavLink = styled(Link)`
   cursor: pointer;
   transition: ${props => props.theme.transitions.default};
   position: relative;
+  padding: ${props => props.theme.spacing.sm} 0;
   
   &:hover {
-    color: ${props => props.theme.colors.text};
+    color: ${props => props.theme.colors.primary};
   }
   
   &.active {
@@ -96,11 +94,11 @@ const NavLink = styled(Link)`
   &::after {
     content: '';
     position: absolute;
-    bottom: -5px;
+    bottom: 0;
     left: 0;
     width: 0;
     height: 2px;
-    background: ${props => props.theme.colors.gradient.purpleGold};
+    background: ${props => props.theme.colors.gradient.redPurple};
     transition: width 0.3s ease;
   }
   
@@ -131,18 +129,8 @@ const MobileMenuButton = styled.button`
 `;
 
 const Header = () => {
-  const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -156,11 +144,18 @@ const Header = () => {
     return location.pathname === path;
   };
 
+  // Explicit navigation handler to prevent new windows
+  const handleNavClick = (e) => {
+    e.stopPropagation();
+    closeMobileMenu();
+    // Let React Router handle the navigation normally
+  };
+
   return (
-    <HeaderContainer $scrolled={scrolled}>
+    <HeaderContainer>
       <Nav>
         <Logo to="/" onClick={closeMobileMenu}>
-          AS
+          <img src="/images/logo1.png" alt="AS" />
         </Logo>
         
         <NavLinks $isOpen={mobileMenuOpen}>
@@ -168,7 +163,7 @@ const Header = () => {
             <NavLink
               to="/"
               className={isActive('/') ? 'active' : ''}
-              onClick={closeMobileMenu}
+              onClick={handleNavClick}
             >
               Home
             </NavLink>
@@ -177,7 +172,7 @@ const Header = () => {
             <NavLink
               to="/background"
               className={isActive('/background') ? 'active' : ''}
-              onClick={closeMobileMenu}
+              onClick={handleNavClick}
             >
               Background
             </NavLink>
@@ -186,7 +181,7 @@ const Header = () => {
             <NavLink
               to="/projects"
               className={isActive('/projects') ? 'active' : ''}
-              onClick={closeMobileMenu}
+              onClick={handleNavClick}
             >
               Projects
             </NavLink>
@@ -195,7 +190,7 @@ const Header = () => {
             <NavLink
               to="/mission"
               className={isActive('/mission') ? 'active' : ''}
-              onClick={closeMobileMenu}
+              onClick={handleNavClick}
             >
               Mission
             </NavLink>

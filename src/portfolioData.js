@@ -8,6 +8,24 @@ let portfolioData = {
     "bio": "Hey there! I'm Amaan Supariwala. I was previously a Computer Science and Finance undergrad at The University of California, Berkeley. I'm now a product developer with Amazon, and a sports analytics enthusiast, building Hoops Dojo. My personal and professional objectives are to harness the capacity of AI and Data Driven Decisions to be at the forefront of tech and sports innovation. I aim to be a founding engineer.",
     "social": [
       {
+        "name": "instagram",
+        "url": "https://instagram.com/amaan2something",
+        "icon": "fab fa-instagram",
+        "label": "Instagram"
+      },
+      {
+        "name": "tiktok",
+        "url": "https://tiktok.com/@amaan2something",
+        "icon": "fab fa-tiktok",
+        "label": "TikTok"
+      },
+      {
+        "name": "twitter",
+        "url": "https://twitter.com/amaansupariwala",
+        "icon": "fab fa-twitter",
+        "label": "Twitter"
+      },
+      {
         "name": "linkedin",
         "url": "https://linkedin.com/in/amaansupariwala",
         "icon": "fab fa-linkedin",
@@ -24,18 +42,6 @@ let portfolioData = {
         "url": "https://github.com/amaansupariwala",
         "icon": "fab fa-github",
         "label": "GitHub"
-      },
-      {
-        "name": "twitter",
-        "url": "https://twitter.com/amaansupariwala",
-        "icon": "fab fa-twitter",
-        "label": "Twitter"
-      },
-      {
-        "name": "instagram",
-        "url": "https://instagram.com/amaansupariwala",
-        "icon": "fab fa-instagram",
-        "label": "Instagram"
       }
     ],
     "projects": [
@@ -43,8 +49,8 @@ let portfolioData = {
         "title": "Cerebro Sports",
         "category": "Sports Tech",
         "description": "Leading AI development for sports analytics platform with Mark Cuban investment",
-        "image": "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-        "videoUrl": "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+        "image": "/images/cerebro-sports-project.jpg", // TODO: Upload cerebro-sports-project.jpg to /public/images/
+        "videoUrl": "/images/cerebro-sports-demo.mp4", // TODO: Upload cerebro-sports-demo.mp4 to /public/images/
         "url": "https://cerebrosports.com",
         "github": "https://github.com/amaansupariwala",
         "achievement": "Mark Cuban Investment in Cerebro Sports",
@@ -54,8 +60,8 @@ let portfolioData = {
         "title": "MIT Sloan Competition",
         "category": "Startup Competition",
         "description": "Winner of MIT Sloan Sports Analytics Conference startup competition",
-        "image": "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-        "videoUrl": "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+        "image": "/images/mit-sloan-competition.jpg", // TODO: Upload mit-sloan-competition.jpg to /public/images/ (or use existing sloan-win-stage.jpg)
+        "videoUrl": "/images/mit-sloan-presentation.mp4", // TODO: Upload mit-sloan-presentation.mp4 to /public/images/
         "url": "https://sloanconference.com",
         "github": "https://github.com/amaansupariwala",
         "achievement": "MIT Sloan Startup Contest Winner",
@@ -65,8 +71,8 @@ let portfolioData = {
         "title": "The Hoops Dojo",
         "category": "Basketball Analytics",
         "description": "Digital creator platform for basketball analytics and content creation",
-        "image": "https://res.cloudinary.com/demo/image/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.jpg",
-        "videoUrl": "https://res.cloudinary.com/demo/video/upload/w_800,h_600,c_fill,g_auto,f_auto,q_auto/sample.mp4",
+        "image": "/images/hoops-dojo-project.jpg", // TODO: Upload hoops-dojo-project.jpg to /public/images/
+        "videoUrl": "/images/hoops-dojo-demo.mp4", // TODO: Upload hoops-dojo-demo.mp4 to /public/images/
         "url": "https://www.youtube.com/@TheHoopsDojo/shorts",
         "github": "https://github.com/amaansupariwala",
         "achievement": "Growing Basketball Analytics Community",

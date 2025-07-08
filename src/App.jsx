@@ -8,7 +8,6 @@ import Home from './pages/Home';
 import Background from './pages/Background';
 import Projects from './pages/Projects';
 import Mission from './pages/Mission';
-import MiniHoopsGame from './components/MiniHoopsGame/MiniHoopsGame';
 import { theme, GlobalStyles } from './theme';
 
 const App = () => {
@@ -26,7 +25,6 @@ const App = () => {
               <Route path="/mission" element={<Mission />} />
             </Routes>
           </AnimatePresence>
-          <MiniHoopsGame />
           <Footer />
         </div>
       </Router>

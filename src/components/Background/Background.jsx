@@ -256,7 +256,7 @@ const Background = ({ portfolioData }) => {
           >
             <PhotoFrame />
             <Photo
-              src="https://res.cloudinary.com/demo/image/upload/w_400,h_500,c_fill,g_face,f_auto,q_auto/sample.jpg"
+              src="/images/headshot.jpg"
               alt="Amaan Supariwala"
             />
           </PhotoContainer>
