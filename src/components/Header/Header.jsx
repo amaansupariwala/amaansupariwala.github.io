@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
 
@@ -45,6 +45,49 @@ const Logo = styled(Link)`
   &:hover img {
     transform: scale(1.05);
     filter: brightness(1.1);
+  }
+`;
+
+const LeftGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: ${props => props.theme.spacing.md};
+`;
+
+const gradientShift = keyframes`
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+`;
+
+const CtaButton = styled.a`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.md};
+  border-radius: ${props => props.theme.borderRadius.full};
+  font-size: ${props => props.theme.fontSizes.sm};
+  font-weight: ${props => props.theme.fontWeights.medium};
+  color: white;
+  text-decoration: none;
+  background: ${props => props.theme.colors.gradient.redPurple};
+  background-size: 200% 200%;
+  transition: ${props => props.theme.transitions.default};
+  cursor: pointer;
+  white-space: nowrap;
+
+  &:hover {
+    animation: ${gradientShift} 2.5s ease infinite;
+    box-shadow: ${props => props.theme.shadows.glow};
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(255,255,255,0.15), ${props => props.theme.shadows.glow};
+  }
+
+  @media (max-width: ${props => props.theme.breakpoints.md}) {
+    padding: ${props => props.theme.spacing.xs} ${props => props.theme.spacing.sm};
+    font-size: ${props => props.theme.fontSizes.xs};
   }
 `;
 
@@ -154,9 +197,12 @@ const Header = () => {
   return (
     <HeaderContainer>
       <Nav>
-        <Logo to="/" onClick={closeMobileMenu}>
-          <img src="/images/logo1.png" alt="AS" />
-        </Logo>
+        <LeftGroup>
+          <Logo to="/" onClick={closeMobileMenu}>
+            <img src="/images/logo1.png" alt="AS" />
+          </Logo>
+          <CtaButton href="mailto:amaan2something@gmail.com">Get in touch</CtaButton>
+        </LeftGroup>
         
         <NavLinks $isOpen={mobileMenuOpen}>
           <li>

@@ -612,8 +612,7 @@ const Home = () => {
     'Content Creator',
     'Startup Founder',
     'Ex Big Tech Engineer',
-    'Curious Mind',
-    'Avid explorist',
+    'Curious Explorer',
     'What more can be said?'
   ], []);
 
