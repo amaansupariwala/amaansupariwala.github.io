@@ -2,7 +2,7 @@ let portfolioData = {
     "imagebaseurl": "https://amaansupariwala.github.io",
     "name": "Amaan Supariwala",
     "role": "Knowledge Collector | Innovator | Engineer",
-    "email": "amaan.supariwala@gmail.com",
+    "email": "amaan2something@gmail.com",
     "location": "Seattle, WA",
     "resumeUrl": "https://tinyurl.com/amaans-resume",
     "bio": "Hey there! I'm Amaan Supariwala. I was previously a Computer Science and Finance undergrad at The University of California, Berkeley. I'm now a product developer with Amazon, and a sports analytics enthusiast, building Hoops Dojo. My personal and professional objectives are to harness the capacity of AI and Data Driven Decisions to be at the forefront of tech and sports innovation. I aim to be a founding engineer.",
@@ -185,7 +185,7 @@ let portfolioData = {
     "contact": {
       "address": "Seattle, WA",
       "phone": "",
-      "email": "amaan.supariwala@gmail.com",
+      "email": "amaan2something@gmail.com",
       "website": "https://amaansupariwala.github.io"
     },
     "colors": {

@@ -610,15 +610,14 @@ const Home = () => {
   
   const typingTexts = React.useMemo(() => [
     'Content Creator',
-    'Startup Founder',
-    'Ex Big Tech Engineer',
-    'Curious Explorer',
-    'What more can be said?'
+    'Sports Startup Founder',
+    'Ex Big Tech'
   ], []);
 
   React.useEffect(() => {
     const typeSpeed = isDeleting ? 50 : 100;
-    const currentFullText = typingTexts[currentIndex];
+    const safeIndex = typingTexts.length ? currentIndex % typingTexts.length : 0;
+    const currentFullText = typeof typingTexts[safeIndex] === 'string' ? typingTexts[safeIndex] : '';
     
     const timer = setTimeout(() => {
       if (!isDeleting) {
@@ -632,7 +631,7 @@ const Home = () => {
           setCurrentText(currentFullText.substring(0, currentText.length - 1));
         } else {
           setIsDeleting(false);
-          setCurrentIndex((prevIndex) => (prevIndex + 1) % typingTexts.length);
+          setCurrentIndex((prevIndex) => typingTexts.length ? (prevIndex + 1) % typingTexts.length : 0);
         }
       }
     }, typeSpeed);

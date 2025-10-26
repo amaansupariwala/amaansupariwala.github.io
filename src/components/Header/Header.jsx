@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X } from 'lucide-react';
@@ -9,12 +9,12 @@ const HeaderContainer = styled.header`
   left: 0;
   right: 0;
   height: ${props => props.theme.header.height};
-  background: rgba(12, 12, 15, 0.95);
+  background: ${props => props.$scrolled ? 'rgba(12, 12, 15, 0.98)' : 'rgba(12, 12, 15, 0.95)'};
   backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(220, 38, 38, 0.3);
+  border-bottom: 1px solid ${props => props.$scrolled ? 'rgba(220, 38, 38, 0.45)' : 'rgba(220, 38, 38, 0.3)'};
   z-index: ${props => props.theme.zIndices.sticky};
   transition: all 0.3s ease;
-  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: ${props => props.$scrolled ? '0 6px 30px rgba(0, 0, 0, 0.5)' : '0 2px 20px rgba(0, 0, 0, 0.3)'};
   
   @media (max-width: ${props => props.theme.breakpoints.md}) {
     height: ${props => props.theme.header.mobileHeight};
@@ -174,6 +174,14 @@ const MobileMenuButton = styled.button`
 const Header = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
@@ -195,7 +203,7 @@ const Header = () => {
   };
 
   return (
-    <HeaderContainer>
+    <HeaderContainer $scrolled={isScrolled}>
       <Nav>
         <LeftGroup>
           <Logo to="/" onClick={closeMobileMenu}>
@@ -214,24 +222,7 @@ const Header = () => {
               Home
             </NavLink>
           </li>
-          <li>
-            <NavLink
-              to="/background"
-              className={isActive('/background') ? 'active' : ''}
-              onClick={handleNavClick}
-            >
-              Background
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/projects"
-              className={isActive('/projects') ? 'active' : ''}
-              onClick={handleNavClick}
-            >
-              Projects
-            </NavLink>
-          </li>
+          {/* Background and Projects temporarily hidden */}
           <li>
             <NavLink
               to="/mission"
