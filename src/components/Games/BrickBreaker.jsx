@@ -77,17 +77,48 @@ const OverlayCenter = styled.div`
   justify-content: center;
   z-index: ${props => props.theme.zIndices.overlay};
   pointer-events: none;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+  animation: fadeIn 0.4s ease-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const OverlayCard = styled.div`
   pointer-events: auto;
-  background: rgba(15, 17, 21, 0.9);
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 12px;
-  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(20, 22, 28, 0.95) 0%, rgba(15, 17, 21, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 40px 50px;
   color: #fff;
   text-align: center;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px) scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+
+  div:first-child {
+    font-size: 32px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
 `;
 
 const EndGameButton = styled(GhostButton)`
@@ -102,6 +133,7 @@ const BrickBreaker = ({ onEnd }) => {
   const [lives, setLives] = useState(3);
   const [isTouch, setIsTouch] = useState(false);
   const gameStateRef = useRef('ready');
+  const preventDefaultRef = useRef(null);
 
   // Internal game state not tied to React renders
   const gameRef = useRef({
@@ -502,25 +534,33 @@ const BrickBreaker = ({ onEnd }) => {
     const isMobile = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
     if (!isMobile) return;
 
-    const preventDefault = (e) => {
-      if (gameStateRef.current === 'playing') {
+    // Create prevent default function once and store in ref
+    if (!preventDefaultRef.current) {
+      preventDefaultRef.current = (e) => {
         e.preventDefault();
-      }
-    };
+      };
+    }
 
     if (gameState === 'playing') {
-      const originalOverflow = document.body.style.overflow;
+      // Lock scroll only during gameplay
       document.body.style.overflow = 'hidden';
-      window.addEventListener('touchmove', preventDefault, { passive: false });
-      window.addEventListener('wheel', preventDefault, { passive: false });
+      window.addEventListener('touchmove', preventDefaultRef.current, { passive: false });
+      window.addEventListener('wheel', preventDefaultRef.current, { passive: false });
+
       return () => {
-        document.body.style.overflow = originalOverflow || '';
-        window.removeEventListener('touchmove', preventDefault);
-        window.removeEventListener('wheel', preventDefault);
+        // Clean up on unmount or state change
+        document.body.style.overflow = '';
+        window.removeEventListener('touchmove', preventDefaultRef.current);
+        window.removeEventListener('wheel', preventDefaultRef.current);
       };
     } else {
-      // Ensure scroll is enabled when not playing
+      // Always unlock scroll in non-playing states
       document.body.style.overflow = '';
+      // Aggressively remove any lingering listeners
+      if (preventDefaultRef.current) {
+        window.removeEventListener('touchmove', preventDefaultRef.current);
+        window.removeEventListener('wheel', preventDefaultRef.current);
+      }
     }
   }, [gameState]);
 
@@ -547,34 +587,53 @@ const BrickBreaker = ({ onEnd }) => {
         </ControlsRow>
       </Hud>
 
-      <EndGameButton onClick={() => { 
-        // Ensure scroll is re-enabled on exit
-        try { document.body.style.overflow = ''; } catch (e) {}
-        resetGame(); 
-        setGameState('ready'); 
-        if (onEnd) onEnd(); 
+      <EndGameButton onClick={() => {
+        // Explicitly unlock scroll
+        document.body.style.overflow = '';
+        resetGame();
+        setGameState('ready');
+        if (onEnd) onEnd();
       }} aria-label="End game">
         ✕ End game
       </EndGameButton>
 
       {(gameState === 'ready' || gameState === 'won' || gameState === 'lost') && (
-        <OverlayCenter onClick={() => startGame()} onTouchStart={() => startGame()}>
-          <OverlayCard>
-            {gameState === 'ready' && <div>{isTouch ? 'Tap anywhere to start' : 'Click anywhere or press SPACE to start'}</div>}
+        <OverlayCenter>
+          <OverlayCard
+            onClick={(e) => {
+              if (gameState === 'ready') {
+                e.stopPropagation();
+                startGame();
+              }
+            }}
+            onTouchStart={(e) => {
+              if (gameState === 'ready') {
+                e.stopPropagation();
+                startGame();
+              }
+            }}
+          >
+            {gameState === 'ready' && (
+              <div style={{ fontSize: 24, fontWeight: 500, opacity: 0.9 }}>
+                {isTouch ? '👆 Tap to play' : '🖱️ Click to play'}
+              </div>
+            )}
             {gameState === 'won' && (
               <div>
-                <div>Good job!</div>
-                <div style={{ marginTop: 12 }}>
-                  <GhostButton onClick={() => { resetGame(); setGameState('ready'); }}>Play again</GhostButton>
+                <div>🎉 You won!</div>
+                <div style={{ marginTop: 28, fontSize: 14, opacity: 0.7, marginBottom: 20 }}>
+                  Ready for another round?
                 </div>
+                <GhostButton onClick={(e) => { e.stopPropagation(); resetGame(); setGameState('ready'); }}>Play again</GhostButton>
               </div>
             )}
             {gameState === 'lost' && (
               <div>
-                <div>Game over</div>
-                <div style={{ marginTop: 12 }}>
-                  <GhostButton onClick={() => { resetGame(); }}>Play again</GhostButton>
+                <div>💥 Game over</div>
+                <div style={{ marginTop: 28, fontSize: 14, opacity: 0.7, marginBottom: 20 }}>
+                  Try again?
                 </div>
+                <GhostButton onClick={(e) => { e.stopPropagation(); resetGame(); setGameState('ready'); }}>Play again</GhostButton>
               </div>
             )}
           </OverlayCard>
